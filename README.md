@@ -40,6 +40,11 @@ Example of the `?charinfo` command in action:
 
 ![CharInfo Command Example](https://github.com/user-attachments/assets/f29451e6-0806-42c6-be6e-df92b06479d4)
 
+Example of the `WordFiler` message filter in action:
+
+![WordFilterImageCommand](https://github.com/user-attachments/assets/4514dd31-fd10-4f0d-8f5c-276140b9215f)
+
+
 ## Development
 
 CRAC Bot is under active development with near-daily updates. New features and improvements are being added regularly.
