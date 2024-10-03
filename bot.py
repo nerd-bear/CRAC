@@ -1,19 +1,21 @@
 import discord
-import datetime
-import os
-import unicodedata
-from PIL import Image, ImageDraw, ImageFont
-import tempfile
 
 from rich.console import Console
 from rich.panel import Panel
 
+import datetime
+import os
+import unicodedata
+import tempfile
+
+from PIL import Image, ImageDraw, ImageFont
+
 BOT_PREFIX = "?"
 BOT_NAME = "CRAC Bot"
-BOT_VERSION = "0.4.1"
+BOT_VERSION = "0.4.2"
 
 TOKEN = 'TOKEN_MASKED'
-LOGGING_CHANNEL_ID = 1290060885485948950
+LOGGING_CHANNEL_ID = 'LOG_CHANNEL_ID_AS_A_STRING'
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -36,8 +38,7 @@ async def get_info_text():
     """
 
 def get_char_image(char):
-    logger.info(f"Generating image for character '{char}'")
-    
+    # logger.info(f"Generating image for character '{char}'")
     try:
         img = Image.new('RGB', (200, 200), color='white')
         d = ImageDraw.Draw(img)
@@ -53,7 +54,7 @@ def get_char_image(char):
             img.save(temp_file, format="PNG")
             temp_file_path = temp_file.name
         
-        logger.info(f"Successfully generated image for character '{char}' at {temp_file_path}")
+        # logger.info(f"Successfully generated image for character '{char}' at {temp_file_path}")
         return temp_file_path
     except Exception as e:
         logger.error(f"Error generating image for character '{char}': {str(e)}")
@@ -78,7 +79,7 @@ class Logger:
     def error(self, message: str = 'No content'):
         self._write_log('ERROR', message)
 
-logger = Logger(path='C:/coding-projects/Web-Dev/nerd-bear.org/uplaodGif/logs.log')
+logger = Logger(path='./logs/output.log')
 
 @client.event
 async def on_ready():
@@ -119,7 +120,7 @@ async def on_message(message: discord.Message):
     args = message.content.split()[1:]
 
     if command == 'help':
-        await help_command(message.channel)
+        await help_command(message)
     elif command == 'kick':
         await kick_command(message)
     elif command == 'ban':
@@ -139,6 +140,7 @@ async def handle_inappropriate_word(message: discord.Message):
     
     dm_embed = discord.Embed(title="Inappropriate Word Detected", description=f"{BOT_NAME} has detected an inappropriate word! Please do not send racist words in our server! Moderators have been informed!", color=0xff697a)
     dm_embed.add_field(name="Rules", value="Please read our rules before sending such messages!", inline=False)
+    dm_embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
     
     try:
         await user.send(embed=dm_embed)
@@ -151,12 +153,14 @@ async def handle_inappropriate_word(message: discord.Message):
     channel_embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
     await channel.send(embed=channel_embed)
 
-async def help_command(channel):
+async def help_command(message: discord.Message):
+    logger.info(f"{message.author} ran command help")
     embed = discord.Embed(title=f"{BOT_NAME} v{BOT_VERSION} Help Information", description=f"Here are the available commands (prefix: {BOT_PREFIX}):", color=0x9effb8)
     embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
 
     commands = {
         "help": {"desc": "Show this help message", "usage": f"{BOT_PREFIX}help"},
+        "charinfo": {"desc": "Shows information and a image of the character provided", "usage": f"{BOT_PREFIX}charinfo [character]"},
         "kick": {"desc": "Kick a user from the server (Mod only)", "usage": f"{BOT_PREFIX}kick @user [reason]"},
         "ban": {"desc": "Ban a user from the server (Admin only)", "usage": f"{BOT_PREFIX}ban @user [reason]"},
         "shutdown": {"desc": "Shut down the bot (Admin only)", "usage": f"{BOT_PREFIX}shutdown"},
@@ -171,9 +175,10 @@ async def help_command(channel):
         embed.add_field(name=f"{BOT_PREFIX}{cmd}", value=f"{info['desc']}\nUsage: `{info['usage']}`", inline=False)
     
     embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
-    await channel.send(embed=embed)
+    await message.channel.send(embed=embed)
 
 async def kick_command(message: discord.Message):
+    logger.info(f"{message.author} ran command kick")
     if not message.author.guild_permissions.kick_members:
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=0xff0000)
         embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
@@ -190,8 +195,8 @@ async def kick_command(message: discord.Message):
     reason = " ".join(message.content.split()[2:]) or "No reason provided"
 
     try:
-        await member.send(embed=discord.Embed(title="You've Been Kicked", description=f"You were kicked from {message.guild.name}.\nReason: {reason}", color=0xff0000))
-    except discord.errors.Forbidden:
+        await member.send(embed=discord.Embed(title="You've wBeen Kicked", description=f"You were kicked from {message.guild.name}.\nReason: {reason}", color=0xff0000))
+    except:
         pass
 
     await member.kick(reason=reason)
@@ -200,6 +205,7 @@ async def kick_command(message: discord.Message):
     await message.channel.send(embed=embed)
 
 async def ban_command(message):
+    logger.info(f"{message.author} ran command ban")
     if not message.author.guild_permissions.ban_members:
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=0xff0000)
         embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
@@ -226,6 +232,7 @@ async def ban_command(message):
     await message.channel.send(embed=embed)
 
 async def shutdown_command(message):
+    logger.info(f"{message.author} ran command shutdown")
     global bot_active
     if not message.author.guild_permissions.administrator:
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=0xff0000)
@@ -240,6 +247,7 @@ async def shutdown_command(message):
     await message.channel.send(embed=embed)
 
 async def start_command(message):
+    logger.info(f"{message.author} ran command start")
     global bot_active
     if not message.author.guild_permissions.administrator:
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=0xff0000)
@@ -253,7 +261,8 @@ async def start_command(message):
     embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
     await message.channel.send(embed=embed)
 
-async def status_command(message, status_type):
+async def status_command(message: discord.Message, status_type):
+    logger.info(f"{message.author} ran command a status change command")
     if not message.author.guild_permissions.administrator:
         embed = discord.Embed(title="Permission Denied", description="You don't have permission to use this command.", color=0xff0000)
         embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
@@ -276,6 +285,8 @@ async def status_command(message, status_type):
     await message.channel.send(embed=embed)
 
 async def charinfo_command(message: discord.Message):
+    logger.info(f"{message.author} ran command charinfo")
+
     try:
         argument_text = " ".join(message.content.split()[1:])
         char_text = argument_text[0]
@@ -304,12 +315,12 @@ async def charinfo_command(message: discord.Message):
     embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
     
     image_path = get_char_image(char_text)
-    logger.info(f"Image file path for character '{char_text}': {image_path}")
+    # logger.info(f"Image file path for character '{char_text}': {image_path}")
     
     if image_path:
         file = discord.File(image_path, filename="character.png")
         embed.set_thumbnail(url="attachment://character.png")
-        logger.info(f"Attaching image file for character '{char_text}'")
+        # logger.info(f"Attaching image file for character '{char_text}'")
     else:
         file = None
         logger.warning(f"Failed to generate image for character '{char_text}'")
@@ -317,11 +328,11 @@ async def charinfo_command(message: discord.Message):
     embed.set_footer(text='This bot is created and hosted by Nerd Bear', icon_url='https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg')
 
     await message.channel.send(embed=embed, file=file)
-    logger.info(f"Character info embed sent for character '{char_text}'")
+    # logger.info(f"Character info embed sent for character '{char_text}'")
 
     if image_path and os.path.exists(image_path):
         os.remove(image_path)
-        logger.info(f"Temporary image file for character '{char_text}' removed")
+        # logger.info(f"Temporary image file for character '{char_text}' removed")
 
 @client.event
 async def on_message_delete(message):
