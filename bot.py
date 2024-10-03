@@ -160,7 +160,7 @@ async def help_command(message: discord.Message):
 
     commands = {
         "help": {"desc": "Show this help message", "usage": f"{BOT_PREFIX}help"},
-        "charinfo": {"desc": "Shows information and a image of the character provided", "usage": f"{BOT_PREFIX}charinfo [character]"},
+        "charinfo": {"desc": "Shows information and an image of the character provided", "usage": f"{BOT_PREFIX}charinfo [character]"},
         "kick": {"desc": "Kick a user from the server (Mod only)", "usage": f"{BOT_PREFIX}kick @user [reason]"},
         "ban": {"desc": "Ban a user from the server (Admin only)", "usage": f"{BOT_PREFIX}ban @user [reason]"},
         "shutdown": {"desc": "Shut down the bot (Admin only)", "usage": f"{BOT_PREFIX}shutdown"},
@@ -195,7 +195,7 @@ async def kick_command(message: discord.Message):
     reason = " ".join(message.content.split()[2:]) or "No reason provided"
 
     try:
-        await member.send(embed=discord.Embed(title="You've wBeen Kicked", description=f"You were kicked from {message.guild.name}.\nReason: {reason}", color=0xff0000))
+        await member.send(embed=discord.Embed(title="You've been Kicked", description=f"You were kicked from {message.guild.name}.\nReason: {reason}", color=0xff0000))
     except:
         pass
 
