@@ -51,7 +51,7 @@ CRAC Bot is under active development with near-daily updates. New features and i
 
 ## Contributing
 
-We welcome contributions! Please feel free to submit a Pull Request.
+We welcome and love contributions! Please feel free to submit a Pull Request.
 
 ## Support
 
