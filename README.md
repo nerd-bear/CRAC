@@ -1,6 +1,6 @@
 # CRAC Bot
 
-CRAC Bot is a versatile, all-purpose Discord bot currently in active development. It's designed to enhance server management and user interaction with a wide range of features and commands.
+CRAC Bot is a versatile, all-purpose Discord bot currently in active development. It's designed to enhance server management and user interaction with various features and commands.
 
 ## Features
 
