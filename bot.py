@@ -3,12 +3,19 @@ import discord
 from rich.console import Console
 from rich.panel import Panel
 
+import yt_dlp
+
 import datetime
 import os
 import unicodedata
 import tempfile
+import asyncio
+import random
+import requests
+import base64
 
 from PIL import Image, ImageDraw, ImageFont
+
 
 BOT_PREFIX = "?"
 BOT_NAME = "CRAC Bot"
@@ -16,6 +23,10 @@ BOT_VERSION = "0.4.3"
 
 TOKEN = "TOKEN_MASKED"
 LOGGING_CHANNEL_ID = 'LOG_CHANNEL_ID_AS_A_INT'
+
+SPEECHIFY_TOKEN = "SPEECHIFY_TOKEN"
+API_BASE_URL = "https://api.sws.speechify.com"
+VOICE_ID = "george"
 
 intents = discord.Intents.all()
 intents.message_content = True
@@ -65,8 +76,28 @@ def get_char_image(char):
         return None
 
 
+def text_to_speech(text, output_file):
+    body = {"input": text, "voice_id": VOICE_ID, "audio_format": "mp3"}
+
+    headers = {
+        "Authorization": f"Bearer {SPEECHIFY_TOKEN}",
+        "Content-Type": "application/json",
+    }
+
+    response = requests.post(
+        url=f"{API_BASE_URL}/v1/audio/speech", json=body, headers=headers
+    )
+
+    if response.status_code == 200:
+        audio_data = base64.b64decode(response.json()["audio_data"])
+        with open(output_file, "wb") as f:
+            f.write(audio_data)
+    else:
+        print(f"Error: {response.status_code}, {response.text}")
+
+
 class Logger:
-    def __init__(self, path: str = "./logs/logs.log") -> None:
+    def __init__(self, path: str = "./logs/output.log") -> None:
         self.path = path
 
     def _write_log(self, level: str, message: str):
@@ -170,6 +201,21 @@ async def on_message(message: discord.Message):
     elif command == "charinfo":
         await charinfo_command(message)
 
+    elif command == "join":
+        await join_vc_command(message)
+
+    elif command == "leave":
+        await leave_vc_command(message)
+
+    elif command == "tts":
+        await tts_command(message)
+
+    elif command == "play":
+        await play_command(message)
+
+    elif command == "profile":
+        await profile_command(message)
+
     elif command in ["play", "stream", "listen", "watch"]:
         await status_command(message, command)
 
@@ -229,6 +275,18 @@ async def help_command(message: discord.Message):
         "charinfo": {
             "desc": "Shows information and a image of the character provided",
             "usage": f"{BOT_PREFIX}charinfo [character]",
+        },
+        "tts": {
+            "desc": "Join the vc you are in and uses Text-to-Speech to say your text",
+            "usage": f"{BOT_PREFIX}tts [input_text]",
+        },
+        "play": {
+            "desc": "Plays a song in the voice channel you are in",
+            "usage": f"{BOT_PREFIX}play [youtube_url]",
+        },
+        "profile": {
+            "desc": "Gets information about the user.",
+            "usage": f"{BOT_PREFIX}profile @user",
         },
         "timeout": {
             "desc": "Timeout a user for a specified duration (Mod only)",
@@ -803,6 +861,299 @@ async def timeout_command(message: discord.Message):
         pass
 
 
+async def join_vc_command(message: discord.Message):
+    logger.info(f"{message.author} ran command join")
+    try:
+        channel = client.get_channel(message.author.voice.channel.id)
+        await channel.connect()
+    except Exception as e:
+        print(e)
+
+
+async def leave_vc_command(message: discord.Message):
+    logger.info(f"{message.author} ran command leave")
+    try:
+        await message.guild.voice_client.disconnect()
+    except Exception as e:
+        pass
+
+
+async def tts_command(message: discord.Message):
+    logger.info(f"{message.author} ran command tts")
+    text = " ".join(message.content.split()[1:])
+
+    if not text:
+        await message.channel.send("Please provide some text for the TTS.")
+        return
+
+    output_file = f"./temp/audio/{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}{random.randint(0, 9)}.mp3"
+
+    try:
+        text_to_speech(text, output_file)
+    except Exception as e:
+        embed = discord.Embed(
+            title="Error occurred",
+            description=f"A issue occurred during the generation of the Text-to-Speech mp3 file!. Usage: {BOT_PREFIX}tts [message]",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    try:
+        voice_channel = message.author.voice.channel
+    except:
+        embed = discord.Embed(
+            title="Join voice channel",
+            description=f"Please join a voice channel to use this command!. Usage: {BOT_PREFIX}tts [message]",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    try:
+        vc = await voice_channel.connect()
+    except discord.ClientException:
+        vc = message.guild.voice_client
+
+    if vc.is_playing():
+        vc.stop()
+
+    vc.play(
+        discord.FFmpegPCMAudio(source=output_file),
+        after=lambda e: asyncio.run_coroutine_threadsafe(vc.disconnect(), client.loop),
+    )
+
+    while vc.is_playing():
+        await asyncio.sleep(0.1)
+
+    if os.path.exists(output_file):
+        os.remove(output_file)
+
+    embed = discord.Embed(
+        title="Ended TTS",
+        description=f"Successfully generated and played TTS file. Disconnecting from <#{voice_channel.id}>",
+        color=0x00FF00,
+    )
+    embed.set_footer(
+        text="This bot is created and hosted by Nerd Bear",
+        icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+    )
+    await message.channel.send(embed=embed)
+    return
+
+
+async def play_command(message: discord.Message):
+    logger.info(f"{message.author} ran command play")
+    args = message.content.split(" ", 1)
+    if len(args) < 2:
+        await message.channel.send("Please provide a YouTube URL or search term.")
+        return
+
+    query = args[1]
+
+    try:
+        voice_channel = message.author.voice.channel
+        if not voice_channel:
+            raise AttributeError
+    except AttributeError:
+        embed = discord.Embed(
+            title="Join voice channel",
+            description="Please join a voice channel to use this command!",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    try:
+        vc = await voice_channel.connect()
+    except discord.ClientException:
+        vc = message.guild.voice_client
+
+    if vc.is_playing():
+        vc.stop()
+
+    try:
+        with yt_dlp.YoutubeDL({"format": "bestaudio", "noplaylist": "True"}) as ydl:
+            info = ydl.extract_info(query, download=False)
+            URL = info["url"]
+            title = info["title"]
+            message.channel.send(content=info)
+    except Exception as e:
+        embed = discord.Embed(
+            title="Error occurred",
+            description=f"An issue occurred while trying to fetch the audio: {str(e)}",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    vc.play(
+        discord.FFmpegPCMAudio(
+            URL,
+            **{
+                "before_options": "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5",
+                "options": "-vn",
+            },
+        )
+    )
+
+    embed = discord.Embed(
+        title="Now Playing",
+        description=f"Now playing: {title}",
+        color=0x00FF00,
+    )
+    embed.set_footer(
+        text="This bot is created and hosted by Nerd Bear",
+        icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+    )
+    await message.channel.send(embed=embed)
+
+
+async def profile_command(message: discord.Message):
+    if len(message.mentions) < 0:
+        embed = discord.Embed(
+            title="Invalid Usage",
+            description=f"Usage: {BOT_PREFIX}profile @user",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    try:
+        user = message.mentions[0]
+
+    except Exception as e:
+        embed = discord.Embed(
+            title="Invalid Usage",
+            description=f"Usage: {BOT_PREFIX}profile @user",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    try:
+        fetched_user = await client.fetch_user(user.id)
+
+    except discord.errors.NotFound as e:
+        embed = discord.Embed(
+            title="Not found",
+            description=f"Error occurred while fetching user. Usage: {BOT_PREFIX}profile @user",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    except discord.errors.HTTPException as e:
+        embed = discord.Embed(
+            title="Unknown Error",
+            description=f"Error occurred while fetching user, but this exception does not have defined behavior. Usage: {BOT_PREFIX}profile @user",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    if user not in message.guild.members:
+        embed = discord.Embed(
+            title="Member not in guild!",
+            description=f"Please make sure that the user you are searching for exists and is in this guild. Usage: {BOT_PREFIX}profile @user",
+            color=0xFF0000,
+        )
+        embed.set_footer(
+            text="This bot is created and hosted by Nerd Bear",
+            icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+        )
+        await message.channel.send(embed=embed)
+        return
+
+    avatar = user.avatar
+    name = user.display_name
+    username = user.name
+    user_id = user.id
+    status = user.status
+    creation = user.created_at.strftime("%d/%m/%y %H:%M:%S")
+    # badges   = user.public_flags
+    banner_url = None
+
+    # badges_str = str(badges.all()).replace('[<UserFlags.', '').replace('>]', '').replace('_',' ').replace(':', '').title()
+    # badges_str = ''.join([i for i in badges_str if not i.isdigit()])
+
+    try:
+        banner_url = fetched_user.banner.url
+    except:
+        pass
+
+    if status == discord.enums.Status(value="dnd"):
+        status = "⛔ Do not disturb"
+
+    elif status == discord.enums.Status(value="online"):
+        status = "🟢 Online"
+
+    elif status == discord.enums.Status(value="idle"):
+        status = "🟡 Idle"
+
+    else:
+        status = "⚫ Offline"
+
+    embed = discord.Embed(
+        title=f"{name}'s Profile",
+        description="Users public discord information, please don't use for bad or illegal purposes!",
+    )
+    embed.add_field(name="Display Name", value=name, inline=True)
+    embed.add_field(name="Username", value=username, inline=True)
+    embed.add_field(name="User ID", value=user_id, inline=True)
+    embed.add_field(name="Creation Time", value=creation, inline=True)
+    embed.add_field(name="Status", value=status, inline=True)
+    # embed.add_field(name='Badges',        value=badges_str, inline=True)
+    embed.set_thumbnail(
+        url=(
+            avatar
+            if avatar
+            else "https://i.pinimg.com/474x/d6/c1/09/d6c109542c43e5b7c6699761c8c78d16.jpg"
+        )
+    )
+    embed.set_footer(
+        text="This bot is created and hosted by Nerd Bear",
+        icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
+    )
+    embed.set_image(url=(banner_url if banner_url != None else ""))
+    embed.color = 0x5865F2
+    embed.colour = 0x5865F2
+
+    await message.channel.send(embed=embed)
+
+
 @client.event
 async def on_message_delete(message):
     if message.author == client.user:
@@ -829,6 +1180,10 @@ async def on_message_delete(message):
         icon_url="https://as2.ftcdn.net/v2/jpg/01/17/00/87/1000_F_117008730_0Dg5yniuxPQLz3shrJvLIeBsPfPRBSE1.jpg",
     )
     await channel.send(embed=embed)
+
+
+async def vc_mute_command():
+    pass
 
 
 @client.event
