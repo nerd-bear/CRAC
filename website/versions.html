@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRAC Bot - Version History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    
+    <!-- Open Graph Meta Tags (for Discord and other platforms) -->
+    <meta property="og:title" content="CRAC Bot | Version History">
+    <meta property="og:description" content="Explore the version history of CRAC Bot, a versatile Discord bot for server management and user interaction. See the latest updates, features, and improvements.">
+    <meta property="og:image" content="https://crac.nerd-bear.org/pfp-5.png">
+    <meta property="og:url" content="https://crac.nerd-bear.org/versions">
+    <meta property="og:type" content="website">
+
+    <style>
+        .pfp-hover {
+            transition: transform 0.3s ease-in-out;
+        }
+        .pfp-hover:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <nav class="container mx-auto p-6">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-blue-600">
+                <a href="https://crac.nerd-bear.org/" class="hover:text-blue-800 transition">CRAC Bot</a>
+            </h1>
+            <ul class="flex space-x-6">
+                <li><a href="https://crac.nerd-bear.org/" class="hover:text-blue-600 transition">Home</a></li>
+                <li><a href="https://crac.nerd-bear.org/commands" class="hover:text-blue-600 transition">Commands</a></li>
+                <li><a href="https://crac.nerd-bear.org/versions" class="hover:text-blue-600 transition">Versions</a></li>
+                <li><a href="https://crac.nerd-bear.org/support" class="hover:text-blue-600 transition">Support</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-24 p-6">
+        <div class="flex flex-col items-center mb-12">
+            <a href="https://crac.nerd-bear.org/" class="mb-8">
+                <img src="https://crac.nerd-bear.org/pfp-5.png" alt="CRAC Bot" class="rounded-full shadow-lg w-32 h-32 object-cover pfp-hover">
+            </a>
+            <h2 class="text-4xl font-bold mb-4 text-gray-900">
+                <a href="https://crac.nerd-bear.org/" class="hover:text-blue-600 transition">CRAC Bot Version History</a>
+            </h2>
+        </div>
+        
+        <div class="mb-8">
+            <input type="text" id="search-input" placeholder="Search versions..." class="w-full p-2 border border-gray-300 rounded-md">
+        </div>
+
+        <div class="mb-8" id="toc">
+            <h3 class="text-2xl font-bold mb-4">Table of Contents</h3>
+            <ul class="space-y-2">
+                <li><a href="#v0-4-4" class="text-blue-600 hover:underline">CRAC 0.4.4 Beta pre-release</a></li>
+                <li><a href="#v0-4-3" class="text-blue-600 hover:underline">CRAC 0.4.3 Beta pre-release</a></li>
+                <li><a href="#v0-4-2" class="text-blue-600 hover:underline">CRAC 0.4.2 Beta pre-release</a></li>
+                <li><a href="#v0-4-1" class="text-blue-600 hover:underline">CRAC 0.4.1 Beta pre-release</a></li>
+            </ul>
+        </div>
+        
+        <div class="space-y-12" id="versions-container">
+            <div class="bg-white p-8 rounded-lg shadow-md" id="v0-4-4">
+                <h3 class="text-2xl font-bold text-blue-600 mb-4">CRAC 0.4.4 Beta pre-release 🧪</h3>
+                <p class="mb-2"><strong>Program size:</strong> ~0.04 MB (~43.1 KB)</p>
+                <p class="mb-4"><strong>Release date:</strong> 05/10/2024 2:45 AM BST</p>
+                <a href="https://github.com/nerd-bear/CRAC/releases/tag/0.4.4" class="inline-block mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Download v0.4.4</a>
+                
+                <p class="mb-4">This is a simple beta testing release with around 17 simple commands, the commands are: help, charinfo, tts, profile, play, join, leave, timeout, kick, ban, unban, shutdown, start, stream, play, watch, and listen. Nearly daily updates are to be expected.</p>
+                
+                <h4 class="text-xl font-bold mb-2 text-red-600">Warnings</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>This version contains the usage of deprecated classes/functions and similar.</li>
+                    <li>Unstable and not defined behaviour, this version might contain errors that are not handled properly or at all and general bugs.</li>
+                    <li>No proper separation, this program version is currently a relative mess and not well structured, which may cause issues when customizing and or setting the bot up.</li>
+                    <li>The charinfo command still has no support for a large number of special characters</li>
+                    <li>Ban & Unban commands don't handle all exceptions and may cause undefined/buggy behaviour</li>
+                    <li>There is no untimeout command and timeouts can only be in one unit of one amount</li>
+                    <li>Status config commands still exist and have not been removed yet</li>
+                    <li>Join/leave commands still not added to help embed</li>
+                    <li>Many commands missing proper or any error handling</li>
+                    <li>More unknown issues may exist</li>
+                </ul>
+
+                <h4 class="text-xl font-bold mb-2 text-green-600">Change log:</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>Changed the default Logger construct-er log output path to ./logs/output.log instead of ./logs/output.log</li>
+                    <li>Added tts command</li>
+                    <li>Added tts command to the help embed</li>
+                    <li>Added leave command</li>
+                    <li>Added join command</li>
+                    <li>Added run logs to join the command</li>
+                    <li>Added run logs to leave command</li>
+                    <li>Added run logs to TTS command</li>
+                    <li>Changed tts command messages to be embedded</li>
+                    <li>Added more error handling to the tts command</li>
+                    <li>Updated tts command success embed to have a channel link and not a name</li>
+                    <li>Added play command</li>
+                    <li>Patched play command to not leave after starting to play</li>
+                    <li>Added play command to help embed</li>
+                    <li>Added profile command</li>
+                    <li>Added profile command to help embed</li>
+                    <li>Added failsafes and exception handling in the profile command</li>
+                </ul>
+
+                <h4 class="text-xl font-bold mb-2 text-blue-600">Update notes:</h4>
+                <p class="mb-4">I will remove all status config commands as they affect the bot across all guilds (Servers) and are just added as a proof of concept. The commands and features I will be adding are config files, untimeout commands, voice chat mute commands, per guild config, music features, and other fun features! Another feature, probably the biggest one (since it will allow for a lot of new features) will be the music queue backend change since it will allow for many new features.</p>
+                
+                <p class="text-sm text-gray-600 italic">Created by Nerd Bear (This version of CRAC is open source and under the apache2 license)</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-md" id="v0-4-3">
+                <h3 class="text-2xl font-bold text-blue-600 mb-4">CRAC 0.4.3 Beta pre-release 🧪</h3>
+                <p class="mb-2"><strong>Program size:</strong> ~0.03 MB (~30.8 KB)</p>
+                <p class="mb-4"><strong>Release date:</strong> 04/10/2024 2:17 AM BST</p>
+                <a href="https://github.com/nerd-bear/CRAC/releases/tag/0.4.3" class="inline-block mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Download v0.4.3</a>
+                
+                <p class="mb-4">This is a simple beta testing release with around 12 simple commands, the commands are: help, charinfo, timeout, kick, ban, unban, shutdown, start, stream, play, watch, and listen. Nearly daily updates are to be expected.</p>
+                
+                <h4 class="text-xl font-bold mb-2 text-red-600">Warnings</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>This version contains the usage of deprecated classes/functions and similar.</li>
+                    <li>Unstable and not defined behavior, this version might contain errors that are not handled properly or at all and general bugs.</li>
+                    <li>No proper separation, this program version is currently a relative mess and not well structured, which may cause issues when customizing and or setting the bot up.</li>
+                    <li>The charinfo command still has no support for a large number of special characters</li>
+                    <li>Ban & Unban commands don't handle all exceptions and may cause undefined/buggy behavior</li>
+                    <li>There is no untimeout command and timeouts can only be in one unit of one amount</li>
+                    <li>Status config commands still exist and have not been removed yet</li>
+                    <li>More unknown issues may exist</li>
+                </ul>
+
+                <h4 class="text-xl font-bold mb-2 text-green-600">Change log:</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>Added unban command</li>
+                    <li>Added unban command to help embed</li>
+                    <li>Added exception handling to all cases of unban command</li>
+                    <li>Changed Bot Intents from default to all</li>
+                    <li>Changed the Logger class constructer to default to a relative output path</li>
+                    <li>Ran blacklint on source code to increase readability</li>
+                    <li>Specified bot command parameter types for syntax highlighting</li>
+                    <li>Added timeout command</li>
+                    <li>Added timeout command to help embed</li>
+                    <li>Changed the timeout command to send a dm to the user</li>
+                </ul>
+
+                <h4 class="text-xl font-bold mb-2 text-blue-600">Update notes:</h4>
+                <p class="mb-4">I will be removing all status config commands as they affect the bot across all guilds (Servers) and are just added as a proof of concept. The commands and features I will be adding are config files, untimeout command, voice chat mute commands, per guild config, music features, and other fun features!</p>
+                
+                <p class="text-sm text-gray-600 italic">Created by Nerd Bear (This version of CRAC is open source and under the apache2 license)</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-md" id="v0-4-2">
+                <h3 class="text-2xl font-bold text-blue-600 mb-4">CRAC 0.4.2 Beta pre-release 🧪</h3>
+                <p class="mb-2"><strong>Program size:</strong> ~0.02 MB (~18.3 KB)</p>
+                <p class="mb-4"><strong>Release date:</strong> 03/10/2024 3:39 AM BST</p>
+                <a href="https://github.com/nerd-bear/CRAC/releases/tag/0.4.2" class="inline-block mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Download v0.4.2</a>
+                
+                <p class="mb-4">This is a simple beta testing release with around 10 simple commands, the commands are: help, charinfo, kick, ban, shutdown, start, stream, play, watch and listen. Nearly daily updates are to be expected.</p>
+                
+                <h4 class="text-xl font-bold mb-2 text-red-600">Warnings</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>This version contains the usage of deprecated classes/functions and similar.</li>
+                    <li>Unstable and not defined behaviour, this version might contain errors that are not handled properly or at all and general bugs.</li>
+                    <li>No proper separation, this program version is currently a relative mess and not well structured, which may cause issues when customizing and or setting the bot up.</li>
+                    <li>The charinfo command still has no support for a large number of special characters</li>
+                    <li>More unknown issues may exist</li>
+                </ul>
+
+                <h4 class="text-xl font-bold mb-2 text-green-600">Change log:</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>Removed all logger.info logs</li>
+                    <li>Added footer to the DM_EMBED of the word filter</li>
+                    <li>Added the charinfo command to the help embed</li>
+                    <li>Changed the logger initialization to be a relative logger output path</li>
+                    <li>Added logger info level logs to show what user ran what command when</li>
+                </ul>
+                
+                <p class="text-sm text-gray-600 italic">Created by Nerd Bear (This version of CRAC is open source and under the apache2 license)</p>
+            </div>
+
+            <div class="bg-white p-8 rounded-lg shadow-md" id="v0-4-1">
+                <h3 class="text-2xl font-bold text-blue-600 mb-4">CRAC 0.4.1 Beta pre-release 🧪</h3>
+                <p class="mb-2"><strong>Program size:</strong> ~0.02 MB (~18.3 KB)</p>
+                <p class="mb-4"><strong>Release date:</strong> 02/10/2024 4:09 AM BST</p>
+                <a href="https://github.com/nerd-bear/CRAC/releases/tag/0.4.1" class="inline-block mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition">Download v0.4.1</a>
+                
+                <p class="mb-4">This is a simple beta testing release with around 10 simple commands, the commands are: help, charinfo, kick, ban, shutdown, start, stream, play, watch and listen. Nearly daily updates are to be expected.</p>
+                
+                <h4 class="text-xl font-bold mb-2 text-red-600">Warnings</h4>
+                <ul class="list-disc list-inside mb-4 space-y-1">
+                    <li>This version contains the usage of deprecated classes/functions and similar.</li>
+                    <li>Unstable and not defined behaviour, this version might contain errors that are not handled properly or at all and general bugs.</li>
+                    <li>No proper separation, this program version is currently a relative mess and not well structured, which may cause issues when customizing and or setting the bot up.</li>
+                    <li>May include hard-coded paths to files that may not exist or path formats meant for another OS</li>
+                    <li>More unknown issues may exist</li>
+                </ul>
+                
+                <p class="text-sm text-gray-600 italic">Created by Nerd Bear (This version of CRAC is open source and under the apache2 license)</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-gray-100 mt-24 py-8">
+        <div class="container mx-auto text-center text-gray-600">
+            <p>&copy; 2024 CRAC Bot. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="https://crac.nerd-bear.org/privacy-policy" class="text-blue-600 hover:text-blue-800 mx-2">Privacy Policy</a>
+                <a href="https://crac.nerd-bear.org/terms-of-use" class="text-blue-600 hover:text-blue-800 mx-2">Terms of Use</a>
+                <a href="https://crac.nerd-bear.org/support" class="text-blue-600 hover:text-blue-800 mx-2">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const versionContainers = document.querySelectorAll('#versions-container > div');
+
+            // Search functionality
+            searchInput.addEventListener('input', () => {
+                const searchTerm = searchInput.value.toLowerCase();
+
+                versionContainers.forEach(container => {
+                    const versionContent = container.textContent.toLowerCase();
+                    if (versionContent.includes(searchTerm)) {
+                        container.style.display = 'block';
+                    } else {
+                        container.style.display = 'none';
+                    }
+                });
+            });
+
+            // Animation
+            gsap.from('#versions-container > div', {
+                duration: 0.5,
+                opacity: 0,
+                y: 50,
+                stagger: 0.2,
+                ease: 'power2.out'
+            });
+        });
+    </script>
+</body>
+</html>

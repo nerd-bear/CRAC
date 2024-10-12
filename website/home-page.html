@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRAC - Discord Bot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+
+    <!-- Open Graph Meta Tags (for Discord and other platforms) -->
+    <meta property="og:title" content="CRAC Bot | Home">
+    <meta property="og:description" content="A versatile Discord bot for server management and user interaction. Features include moderation tools, customizable status, character info lookup, and message logging. Actively developed with frequent updates. Created by Nerd Bear for enhancing Discord communities.">
+    <meta property="og:image" content="https://crac.nerd-bear.org/pfp-5.png">
+    <meta property="og:url" content="https://crac.nerd-bear.org/">
+    <meta property="og:type" content="website">
+
+    <style>
+        .pfp-hover {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .pfp-hover:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <nav class="container mx-auto p-6">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold text-blue-600">
+                <a href="https://crac.nerd-bear.org/" class="hover:text-blue-800 transition">CRAC Bot</a>
+            </h1>
+            <ul class="flex space-x-6">
+                <li><a href="https://crac.nerd-bear.org/" class="hover:text-blue-600 transition">Home</a></li>
+                <li><a href="https://crac.nerd-bear.org/commands" class="hover:text-blue-600 transition">Commands</a></li>
+                <li><a href="https://crac.nerd-bear.org/versions" class="hover:text-blue-600 transition">Versions</a></li>
+                <li><a href="https://crac.nerd-bear.org/support" class="hover:text-blue-600 transition">Support</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container mx-auto mt-24 p-6">
+        <div class="flex flex-col items-center">
+            <a href="https://crac.nerd-bear.org/" class="mb-8">
+                <img src="https://crac.nerd-bear.org/pfp-5.png" alt="CRAC Bot" class="rounded-full shadow-lg w-32 h-32 object-cover pfp-hover">
+            </a>
+            <h2 class="text-5xl font-bold mb-4 text-gray-900"><a href="https://crac.nerd-bear.org/" class="hover:text-blue-600 transition">Welcome to CRAC Bot</a></h2>
+            <p class="text-xl mb-12 text-gray-600">The ultimate do-it-all Discord bot for moderation and fun!</p>
+            <button id="cta-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-full transition shadow-lg">
+                Add to Discord
+            </button>
+        </div>
+    </main>
+
+    <section id="features" class="container mx-auto mt-24 p-6">
+        <h3 class="text-3xl font-bold mb-12 text-center text-gray-800">Features</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h4 class="text-xl font-bold mb-4 text-blue-600">Moderation</h4>
+                <p class="text-gray-600">Powerful tools to keep your server safe and clean.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h4 class="text-xl font-bold mb-4 text-blue-600">Fun Commands</h4>
+                <p class="text-gray-600">Engage your community with interactive and entertaining commands.</p>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md">
+                <h4 class="text-xl font-bold mb-4 text-blue-600">Customization</h4>
+                <p class="text-gray-600">Tailor CRAC to fit your server's unique needs.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-100 mt-24 py-8">
+        <div class="container mx-auto text-center text-gray-600">
+            <p>&copy; 2024 CRAC Bot. All rights reserved.</p>
+            <div class="mt-4">
+                <a href="https://crac.nerd-bear.org/privacy-policy" class="text-blue-600 hover:text-blue-800 mx-2">Privacy Policy</a>
+                <a href="https://crac.nerd-bear.org/terms-of-use" class="text-blue-600 hover:text-blue-800 mx-2">Terms of Use</a>
+                <a href="https://crac.nerd-bear.org/support" class="text-blue-600 hover:text-blue-800 mx-2">Support</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctaButton = document.getElementById('cta-button');
+            
+            ctaButton.addEventListener('mouseenter', () => {
+                gsap.to(ctaButton, {scale: 1.05, duration: 0.3});
+            });
+
+            ctaButton.addEventListener('mouseleave', () => {
+                gsap.to(ctaButton, {scale: 1, duration: 0.3});
+            });
+
+            // Easter egg
+            let clickCount = 0;
+            ctaButton.addEventListener('click', (e) => {
+                window.location.href = "https://discord.com/oauth2/authorize?client_id=1289921476614553672&permissions=8&integration_type=0&scope=bot";
+            });
+        })
+    </script>
+</body>
+</html>

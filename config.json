@@ -1,0 +1,15 @@
+{
+    "defaults": {
+        "prefix": "?"
+    },
+
+    "bot_version": "0.4.5",
+    "bot_name": "CRAC",
+    "tts_mode":"fast",
+
+    "guilds": {
+        "1288144110880030795": {
+            "prefix": "*"
+        }
+    }
+}
